@@ -1,4 +1,4 @@
-# AI Image Captioner (Frontend) 🤖📸
+# AI Image Captioner (Frontend)
 
 This is the frontend of a full-stack application that analyzes images. It is built with **Angular 19** and connects to a **NestJS** backend to generate text descriptions for images using the OpenAI Vision API.
 

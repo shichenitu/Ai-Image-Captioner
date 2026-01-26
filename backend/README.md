@@ -1,4 +1,4 @@
-# AI Image Captioner (Backend)
+# AI Image Captioner (Backend) 
 
 This is the server-side service for the AI Image Captioner. It is built with **NestJS** and acts as a secure bridge between the frontend and the **OpenAI Vision API**.
 
