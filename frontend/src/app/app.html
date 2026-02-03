@@ -1,23 +1,38 @@
- <div class="container">
+<main class="main-container">
   <h1>AI Image Captioner</h1>
+  <p class="subtitle">Upload an image and let AI describe it for you.</p>
 
-  <div class="box">
-    <input type="file" (change)="onFileSelected($event)" accept="Image/*">
-  </div> 
+  <section class="upload-box">
+    <input 
+      type="file" 
+      (change)="onFileSelected($event)" 
+      [disabled]="isLoading()"
+      accept="image/*"
+    >
 
-  <div class="box">
-    <button (click)="onUpload()" [disabled]="!selectedFile">
-      Analyzing the Image
+    <button 
+      (click)="onUpload()" 
+      [disabled]="isLoading() || !selectedFile()"
+      class="analyze-btn"
+    >
+      @if (isLoading()) {
+        <span class="spinner"></span> Analyzing...
+      } @else {
+        Analyze Image
+      }
     </button>
-  </div>
+  </section>
 
-  <hr>
-
-  @if (caption) {
-    <div class="result">
-      <h3>Analyzing Result: </h3>
-      <p>{{caption}}</p>
+  @if (isLoading()) {
+    <div class="status-info">
+      <p>Processing your image, please wait...</p>
     </div>
   }
-</div>
 
+  @if (caption()) {
+    <div class="result-card">
+      <h3>AI Analysis Result:</h3>
+      <p class="description">{{ caption() }}</p>
+    </div>
+  }
+</main>

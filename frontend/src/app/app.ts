@@ -1,29 +1,44 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { Api } from './services/api';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
 export class App {
-  selectedFile: File | null = null;
-  caption: string = '';
-  
-  constructor(private apiService: Api){}
+  // core three states
+  selectedFile = signal<File | null>(null);
+  caption = signal<string>('');
+  isLoading = signal<boolean>(false);
 
-  onFileSelected(event: any){
-    this.selectedFile = event.target.files[0];
+  // inject HttpClient
+  constructor(private http: HttpClient) {}
+
+  onFileSelected(event: any) {
+    this.selectedFile.set(event.target.files[0]);
   }
 
-  onUpload(){
-    this.apiService.uploadImage(this.selectedFile!).subscribe({
-      next: (response) => {
-        this.caption = response.description;
-      }
-    })
-  }
+  onUpload() {
+    const file = this.selectedFile();
+    if (!file) return;
 
+    this.isLoading.set(true); // loading
+    
+    const formData = new FormData();
+    formData.append('file', file);
+
+    // send the request
+    this.http.post<{description: string}>('http://localhost:3000/upload', formData)
+      .subscribe({
+        next: (res) => {
+          this.caption.set(res.description);
+          this.isLoading.set(false); // finish loading
+        },
+        error: () => {
+          alert('Failed upload');
+          this.isLoading.set(false);
+        }
+      });
+  }
 }
